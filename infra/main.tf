@@ -1,3 +1,7 @@
+locals {
+  subnet_keys = keys(module.subnets.subnets)
+}
+
 terraform {
   required_providers {
 
@@ -32,3 +36,34 @@ module "subnets" {
 
   subnets = var.subnets
 }
+
+resource "google_compute_instance" "vm" {
+  count = length(var.vms)
+  name         = var.vms[count.index].name
+  machine_type = var.vms[count.index].type
+  zone         = "${var.region}-a"
+
+  boot_disk {
+    initialize_params {
+      image = var.vms[count.index].os
+      size  = var.vms[count.index].disk
+    }
+
+    auto_delete = true
+  }
+
+  network_interface {
+    subnetwork = module.subnets.subnets[local.subnet_keys[0]].self_link
+    network_ip = var.vms[count.index].ip
+  }
+}
+
+/*
+resource "google_compute_address" "internal_ip" {
+  count = length(var.vms)
+  name         = "${var.vms[count.index].name}-ip"
+  subnetwork   = module.subnets.subnets[local.subnet_keys[0]].self_link
+  address      = var.vms[count.index].ip
+  region       = var.region
+}
+*/

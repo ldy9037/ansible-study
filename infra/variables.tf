@@ -35,3 +35,13 @@ variable "subnets" {
   type        = list(map(string))
   description = "생성할 서브넷 목록"
 }
+
+variable "vms" {
+  type        = list(object({
+    name = string
+    os   = string
+    type = string
+    disk = number
+    ip   = string
+  }))
+}
