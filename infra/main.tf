@@ -23,9 +23,7 @@ module "vpc" {
   project_id   = var.project_id
   network_name = var.network_name
   description  = var.description
-
-  delete_default_internet_gateway_routes = var.delete_default_internet_gateway_routes
-  mtu                                    = var.mtu
+  mtu          = var.mtu
 }
 
 module "subnets" {
@@ -38,7 +36,7 @@ module "subnets" {
 }
 
 resource "google_compute_instance" "vm" {
-  count = length(var.vms)
+  count        = length(var.vms)
   name         = var.vms[count.index].name
   machine_type = var.vms[count.index].type
   zone         = "${var.region}-a"
@@ -68,4 +66,17 @@ resource "google_compute_firewall" "iap_all_ssh" {
   }
 
   source_ranges = var.firewall.iap_all_ssh.source_ranges
+}
+
+module "nat" {
+  source = "./modules/nat"
+
+  project_id    = var.project_id
+  region        = var.region
+  name          = var.nat.name
+  nat_ips       = var.nat.nat_ips
+  network       = module.vpc.network_name
+  create_router = var.nat.create_router
+  router        = var.nat.router
+  router_asn    = var.nat.router_asn
 }

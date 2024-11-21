@@ -37,7 +37,7 @@ variable "subnets" {
 }
 
 variable "vms" {
-  type        = list(object({
+  type = list(object({
     name = string
     os   = string
     type = string
@@ -48,9 +48,19 @@ variable "vms" {
 
 variable "firewall" {
   type = map(object({
-    name = string
-    protocol = string
-    ports = list(string)
+    name          = string
+    protocol      = string
+    ports         = list(string)
     source_ranges = list(string)
   }))
+}
+
+variable "nat" {
+  type = object({
+    name          = string
+    nat_ips       = list(string)
+    create_router = bool
+    router        = string
+    router_asn    = string
+  })
 }
