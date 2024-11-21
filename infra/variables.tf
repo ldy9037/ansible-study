@@ -45,3 +45,12 @@ variable "vms" {
     ip   = string
   }))
 }
+
+variable "firewall" {
+  type = map(object({
+    name = string
+    protocol = string
+    ports = list(string)
+    source_ranges = list(string)
+  }))
+}

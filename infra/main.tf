@@ -58,12 +58,14 @@ resource "google_compute_instance" "vm" {
   }
 }
 
-/*
-resource "google_compute_address" "internal_ip" {
-  count = length(var.vms)
-  name         = "${var.vms[count.index].name}-ip"
-  subnetwork   = module.subnets.subnets[local.subnet_keys[0]].self_link
-  address      = var.vms[count.index].ip
-  region       = var.region
+resource "google_compute_firewall" "iap_all_ssh" {
+  name    = var.firewall.iap_all_ssh.name
+  network = module.vpc.network_name
+
+  allow {
+    protocol = var.firewall.iap_all_ssh.protocol
+    ports    = var.firewall.iap_all_ssh.ports
+  }
+
+  source_ranges = var.firewall.iap_all_ssh.source_ranges
 }
-*/
