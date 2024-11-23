@@ -54,6 +54,8 @@ resource "google_compute_instance" "vm" {
     subnetwork = module.subnets.subnets[local.subnet_keys[0]].self_link
     network_ip = var.vms[count.index].ip
   }
+
+  metadata_startup_script = var.vms[count.index].startup_script != "" ? file(var.vms[count.index].startup_script) : ""
 }
 
 resource "google_compute_firewall" "iap_all_ssh" {

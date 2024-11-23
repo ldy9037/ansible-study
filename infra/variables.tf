@@ -43,6 +43,7 @@ variable "vms" {
     type = string
     disk = number
     ip   = string
+    startup_script = string
   }))
 }
 
